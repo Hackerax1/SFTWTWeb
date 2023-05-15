@@ -1,5 +1,3 @@
-Sure, here's a sample readme you could use for your project:
-
 # Steam Common Games Finder
 
 This is a web application that allows users to input their Steam Vanity URLs and find the common games they own with their friends. Users can also pick a random common game and save the list of common games to a text file.
