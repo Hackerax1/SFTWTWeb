@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 // Define the route to handle form submissions
-app.post('/get-games', async (req, res) => {
+app.post('/getGames', async (req, res) => {
   try {
     const { vanityUrls } = req.body;
 
