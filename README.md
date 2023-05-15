@@ -38,7 +38,3 @@ Click the "Save List of Common Games" button to save the list of common games to
 - EJS
 - Bootstrap
 - Steam API
-
-## License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
