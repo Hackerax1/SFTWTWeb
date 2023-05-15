@@ -1,9 +1,11 @@
-const express = require('express');
 const bodyParser = require('body-parser');
+const express = require('express');
 const axios = require('axios');
 const path = require('path');
 const ejs = require('ejs');
 const app = express();
+
+require('dotenv').config()
 
 // Set EJS as the templating engine
 app.set('view engine', 'ejs');
@@ -23,7 +25,7 @@ app.get('/', (req, res) => {
 app.post('/getGames', async (req, res) => {
   try {
     const { vanityUrls } = req.body;
-
+    // console.log(process.env.STEAM_API_KEY);
     // Convert the list of vanity URLs to a list of Steam IDs
     const steamIds = await Promise.all(
       vanityUrls.map(async (vanityUrl) => {
@@ -51,7 +53,10 @@ app.post('/getGames', async (req, res) => {
     });
 
     // Render the games template with the common games
-    res.render('games', { commonGames });
+    // console.log(commonGames.length)
+    // res.render('partial/games', { games: commonGames });
+    console.log(commonGames)
+    res.json(commonGames)
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred');

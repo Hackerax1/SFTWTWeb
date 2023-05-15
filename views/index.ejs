@@ -46,13 +46,14 @@
         var data = { vanityUrls: vanityUrls };
         $.post("/getGames", data, function(response) {
           $("#gamesTable tbody").empty();
-          var games = response.games;
-          console.log(games);
+          // var games = response.games;
+          games = response
+          console.log(response)
           if (games.length === 0) {
             $("#gamesTable tbody").append("<tr><td colspan='2' class='text-center'>No common games found.</td></tr>");
           } else {
             $.each(games, function(index, game) {
-              var row = "<tr><th scope='row'>" + (index + 1) + "</th><td>" + game + "</td></tr>";
+              var row = "<tr><th scope='row'>" + (index + 1) + "</th><td>" + game['name'] + "</td></tr>";
               $("#gamesTable tbody").append(row);
             });
           }
