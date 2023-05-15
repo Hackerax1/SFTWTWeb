@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Common Games</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Common Games</h1>
+      <% if (games.length === 0) { %>
+        <p>No common games found.</p>
+      <% } else { %>
+        <ul>
+          <% games.forEach(function(game) { %>
+            <li><%= game.name %></li>
+          <% }); %>
+        </ul>
+        <form action="/save" method="POST">
+          <input type="hidden" name="games" value="<%= JSON.stringify(games) %>">
+          <button type="submit" class="btn btn-primary">Save as text file</button>
+        </form>
+      <% } %>
+    </div>
+  </body>
+</html>

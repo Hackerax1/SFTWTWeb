@@ -1,0 +1,106 @@
+/* Set the background color of the page */
+body {
+    background-color: #f8f9fa;
+  }
+  
+  /* Set the text color of the page */
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    color: #343a40;
+  }
+  
+  /* Add margin to the top and bottom of the main container */
+  .container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  
+  /* Add padding to the input fields */
+  .form-control {
+    padding: 10px;
+  }
+  
+  /* Add margin to the buttons */
+  .btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Style the error message */
+  .error-message {
+    color: red;
+    font-size: 14px;
+  }
+  
+  /* Style the success message */
+  .success-message {
+    color: green;
+    font-size: 14px;
+  }
+  
+  /* Style the table */
+  .table {
+    margin-top: 20px;
+  }
+  
+  /* Style the table headers */
+  .table th {
+    font-weight: bold;
+  }
+  
+  /* Style the table rows */
+  .table td {
+    vertical-align: middle;
+  }
+  
+  /* Style the table action buttons */
+  .table .btn {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  
+  /* Style the modal dialog */
+  .modal-dialog {
+    margin-top: 150px;
+  }
+  
+  /* Style the modal content */
+  .modal-content {
+    border-radius: 0;
+  }
+  
+  /* Style the modal header */
+  .modal-header {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 0;
+  }
+  
+  /* Style the modal footer */
+  .modal-footer {
+    border-radius: 0;
+  }
+  
+  /* Style the modal close button */
+  .close {
+    color: #fff;
+  }
+  
+  /* Style the modal close button on hover */
+  .close:hover,
+  .close:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  

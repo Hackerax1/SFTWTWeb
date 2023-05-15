@@ -1,0 +1,19 @@
+{
+    "name": "steam-games",
+    "version": "1.0.0",
+    "description": "A web application for finding common games among multiple Steam users.",
+    "main": "app.js",
+    "dependencies": {
+        "axios": "^1.4.0",
+        "bootstrap": "^5.3.0-alpha3",
+        "dotenv": "^10.0.0",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "request": "^2.88.2"
+    },
+    "scripts": {
+        "start": "node app.js"
+    },
+    "author": "MickyStilk",
+    "license": "PFW"
+}
