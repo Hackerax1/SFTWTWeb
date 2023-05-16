@@ -71,9 +71,25 @@
         alert("Random Game: " + randomGame);
       });
 
-
-     
-    });
+      $("#saveGamesBtn").click(function() {
+        var gameNames = $("#gamesTable tbody tr td:nth-child(2)").map(function() { return $(this).text(); }).get();
+        if (gameNames.length === 0) {
+          alert("Please get common owned games first.");
+          return;
+        }
+        var gamesString = "";
+        // var data = { games: gameNames };
+        for (var i = 0; i < gameNames.length; i++) {
+          gamesString += gameNames[i] + '\n';
+        }
+        var fileBlob = new Blob([gamesString], { type: 'text/plain' });
+        var url = URL.createObjectURL(fileBlob);
+        var link = document.createElement('a');
+        link.download = 'common_games.txt';
+        link.href = url;
+        link.click();
+        });
+      });
     </script>
 </body>
 </html>
