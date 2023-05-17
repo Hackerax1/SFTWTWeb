@@ -20,6 +20,7 @@
       <button type="button" class="btn btn-primary" id="getGamesBtn">Get Common Owned Games</button>
       <button type="button" class="btn btn-secondary" id="randomGameBtn">Pick a Random Game</button>
       <button type="button" class="btn btn-success" id="saveGamesBtn">Save Common Games to File</button>
+      <button type="button" class="btn btn-danger" id="testBtn">Go to Test Page</button>
     </form>
     <hr>
     <h2 class="text-center mb-4">Common Owned Games</h2>
@@ -46,7 +47,6 @@
         var data = { vanityUrls: vanityUrls };
         $.post("/getGames", data, function(response) {
           $("#gamesTable tbody").empty();
-          // var games = response.games;
           games = response
           console.log(response)
           if (games.length === 0) {
@@ -78,7 +78,6 @@
           return;
         }
         var gamesString = "";
-        // var data = { games: gameNames };
         for (var i = 0; i < gameNames.length; i++) {
           gamesString += gameNames[i] + '\n';
         }
@@ -89,6 +88,9 @@
         link.href = url;
         link.click();
         });
+      $("#testBtn").click(function() {
+        window.location.href = "/test";
+      });
       });
     </script>
 </body>

@@ -21,6 +21,64 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+// Define the test page route
+app.get('/test', (req, res) => {
+  res.render('indextest');
+});
+
+app.post('/getFriends', async (req, res) => {
+  try {
+    const { vanityUrl } = req.body;
+    const steamID = await axios.get(
+      `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=${vanityUrl}`
+    );
+    // console.log(steamID);
+    const friends = await axios.get(
+      `https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamID.data.response.steamid}&relationship=friend`
+    );
+    //console.log(friends);
+    const friendsList = friends.data.friendslist.friends;
+    // console.log(friendsList + "friendsList");
+    const friendsIds = friendsList.map((friend) => friend.steamid);
+    const friendsInfo = await Promise.all(
+      friendsIds.map(async (friend) => {
+        const response = await axios.get(
+          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.STEAM_API_KEY}&steamids=${friend}`
+        );
+        // console.log(response.data.response.players[0]);
+        return response.data.response.players[0];
+      })
+    );
+
+    //trim friendsInfo to only include personaname, steamid, and avatar
+    const friendsInfoTrimmed = friendsInfo.map((friend) => {
+      return {
+        steamID: friend.steamid,
+        personaname: friend.personaname,
+        avatar: friend.avatar,
+      };
+    });
+    console.log(friendsInfoTrimmed)
+    res.json(friendsInfoTrimmed);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+});
+
+app.post('/submitFriends', async (req, res) => {
+  try {
+    const { friends } = req.body;
+    console.log(friends);
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+});
+
+
+
 // Define the route to handle form submissions
 app.post('/getGames', async (req, res) => {
   try {
@@ -53,9 +111,6 @@ app.post('/getGames', async (req, res) => {
     });
 
     // Render the games template with the common games
-    // console.log(commonGames.length)
-    // res.render('partial/games', { games: commonGames });
-    console.log(commonGames)
     res.json(commonGames)
   } catch (error) {
     console.error(error);
