@@ -4,6 +4,8 @@ const axios = require('axios');
 const path = require('path');
 const ejs = require('ejs');
 const app = express();
+const querystring = require('querystring');
+const url = require('url');
 
 require('dotenv').config()
 
@@ -22,21 +24,61 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+// Define the test page route
+app.get('/test', (req, res) => {
+  res.render('indextest');
+});
+
+app.get('/test2', (req, res) => {
+  res.render('indextest2');
+});
+
+gameFunction = async (steamIDs, res) => {
+  try {
+    const ownedGames = await Promise.all(
+      steamIDs.map(async (steamId) => {
+        const response = await axios.get(
+          `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=1`
+        );
+        return response.data.response.games;
+      })
+    );
+    //find the common games
+    const commonGames = ownedGames.reduce((acc, games) => {
+      const appIds = games.map((game) => game.appid);
+      return acc.filter((game) => appIds.includes(game.appid));
+    });
+    return commonGames;
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+};
+
+//define the games page route
+app.post('/games', async (req, res) => {
+  const steamIDs = req.body.steamIDs;
+  console.log(steamIDs);
+  const result = await gameFunction(steamIDs);
+  res.render('games', { result: result });
+});
+
+app.get('/games', async (req, res) => {
+  res.render('games');
+});
+
 app.post('/getFriends', async (req, res) => {
   try {
     const { vanityUrl } = req.body;
     const steamID = await axios.get(
       `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=${vanityUrl}`
     );
-
     // console.log(steamID);
     const friends = await axios.get(
       `https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamID.data.response.steamid}&relationship=friend`
     );
     //console.log(friends);
     const friendsList = friends.data.friendslist.friends;
-    //add user's steamid to friendsList
-    friendsList.push({ steamid: steamID.data.response.steamid });
     // console.log(friendsList + "friendsList");
     const friendsIds = friendsList.map((friend) => friend.steamid);
     const friendsInfo = await Promise.all(
@@ -49,17 +91,12 @@ app.post('/getFriends', async (req, res) => {
       })
     );
 
-
-
     //trim friendsInfo to only include personaname, steamid, and avatar
     const friendsInfoTrimmed = friendsInfo.map((friend) => {
-      //trim profileurl to only include vanityUrl
-      const vanityUrl = friend.profileurl.split('/')[4];
       return {
         steamID: friend.steamid,
         personaname: friend.personaname,
         avatar: friend.avatar,
-        vanityUrl: vanityUrl,
       };
     });
     console.log(friendsInfoTrimmed)
@@ -86,6 +123,17 @@ app.post('/submitFriends', async (req, res) => {
 // Define the route to handle form submissions
 app.post('/getGames', async (req, res) => {
   try {
+    // const { vanityUrls } = req.body;
+    // console.log(process.env.STEAM_API_KEY);
+    // Convert the list of vanity URLs to a list of Steam IDs
+    // const steamIds = await Promise.all(
+    //   vanityUrls.map(async (vanityUrl) => {
+    //     const response = await axios.get(
+    //       `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=${vanityUrl}`
+    //     );
+    //     return response.data.response.steamid;
+    //   })
+    // );
     const { steamIds } = req.body;
     console.log(steamIds);
 
