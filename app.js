@@ -4,6 +4,8 @@ const axios = require('axios');
 const path = require('path');
 const ejs = require('ejs');
 const app = express();
+const querystring = require('querystring');
+const url = require('url');
 
 require('dotenv').config()
 
@@ -12,6 +14,7 @@ app.set('view engine', 'ejs');
 
 // Use the body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -24,6 +27,44 @@ app.get('/', (req, res) => {
 // Define the test page route
 app.get('/test', (req, res) => {
   res.render('indextest');
+});
+
+app.get('/test2', (req, res) => {
+  res.render('indextest2');
+});
+
+gameFunction = async (steamIDs, res) => {
+  try {
+    const ownedGames = await Promise.all(
+      steamIDs.map(async (steamId) => {
+        const response = await axios.get(
+          `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=1`
+        );
+        return response.data.response.games;
+      })
+    );
+    //find the common games
+    const commonGames = ownedGames.reduce((acc, games) => {
+      const appIds = games.map((game) => game.appid);
+      return acc.filter((game) => appIds.includes(game.appid));
+    });
+    return commonGames;
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+};
+
+//define the games page route
+app.post('/games', async (req, res) => {
+  const steamIDs = req.body.steamIDs;
+  console.log(steamIDs);
+  const result = await gameFunction(steamIDs);
+  res.render('games', { result: result });
+});
+
+app.get('/games', async (req, res) => {
+  res.render('games');
 });
 
 app.post('/getFriends', async (req, res) => {
@@ -66,37 +107,40 @@ app.post('/getFriends', async (req, res) => {
   }
 });
 
+
+//get data from submitFriends and send to games page
 app.post('/submitFriends', async (req, res) => {
   try {
     const { friends } = req.body;
     console.log(friends);
-    
+    res.render('games', {friends: friends});
   } catch (error) {
     console.error(error);
     res.status(500).send('An error occurred');
   }
 });
 
-
-
 // Define the route to handle form submissions
 app.post('/getGames', async (req, res) => {
   try {
-    const { vanityUrls } = req.body;
+    // const { vanityUrls } = req.body;
     // console.log(process.env.STEAM_API_KEY);
     // Convert the list of vanity URLs to a list of Steam IDs
-    const steamIds = await Promise.all(
-      vanityUrls.map(async (vanityUrl) => {
-        const response = await axios.get(
-          `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=${vanityUrl}`
-        );
-        return response.data.response.steamid;
-      })
-    );
+    // const steamIds = await Promise.all(
+    //   vanityUrls.map(async (vanityUrl) => {
+    //     const response = await axios.get(
+    //       `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=${vanityUrl}`
+    //     );
+    //     return response.data.response.steamid;
+    //   })
+    // );
+    const { steamIds } = req.body;
+    console.log(steamIds);
 
     // Get the owned games for each Steam ID
     const ownedGames = await Promise.all(
       steamIds.map(async (steamId) => {
+        console.log(steamId);
         const response = await axios.get(
           `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=1`
         );
@@ -109,7 +153,10 @@ app.post('/getGames', async (req, res) => {
       const appIds = games.map((game) => game.appid);
       return acc.filter((game) => appIds.includes(game.appid));
     });
-
+    //alphebetize commonGames
+    commonGames.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
     // Render the games template with the common games
     res.json(commonGames)
   } catch (error) {

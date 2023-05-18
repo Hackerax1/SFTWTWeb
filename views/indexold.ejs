@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Steam Game Finder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">Steam Game Finder</h1>
+    <form>
+      <div class="form-group">
+        <label for="vanityUrls">Enter Vanity URLs (one per line):</label>
+        <textarea class="form-control" id="vanityUrls" rows="5"></textarea>
+      </div>
+      <button type="button" class="btn btn-primary" id="getGamesBtn">Get Common Owned Games</button>
+      <button type="button" class="btn btn-secondary" id="randomGameBtn">Pick a Random Game</button>
+      <button type="button" class="btn btn-success" id="saveGamesBtn">Save Common Games to File</button>
+      <button type="button" class="btn btn-danger" id="testBtn">Go to Test Page</button>
+    </form>
+    <hr>
+    <h2 class="text-center mb-4">Common Owned Games</h2>
+    <table class="table table-bordered" id="gamesTable">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Game Name</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#getGamesBtn").click(function() {
+        var vanityUrls = $("#vanityUrls").val().split("\n").filter(Boolean);
+        if (vanityUrls.length === 0) {
+          alert("Please enter at least one Vanity URL.");
+          return;
+        }
+        var data = { vanityUrls: vanityUrls };
+        $.post("/getGames", data, function(response) {
+          $("#gamesTable tbody").empty();
+          games = response
+          console.log(response)
+          if (games.length === 0) {
+            $("#gamesTable tbody").append("<tr><td colspan='2' class='text-center'>No common games found.</td></tr>");
+          } else {
+            $.each(games, function(index, game) {
+              var row = "<tr><th scope='row'>" + (index + 1) + "</th><td>" + game['name'] + "</td></tr>";
+              $("#gamesTable tbody").append(row);
+            });
+          }
+        });
+      });
+
+      $("#randomGameBtn").click(function() {
+        var gameNames = $("#gamesTable tbody tr td:nth-child(2)").map(function() { return $(this).text(); }).get();
+        if (gameNames.length === 0) {
+          alert("Please get common owned games first.");
+          return;
+        }
+        var randomIndex = Math.floor(Math.random() * gameNames.length);
+        var randomGame = gameNames[randomIndex];
+        alert("Random Game: " + randomGame);
+      });
+
+      $("#saveGamesBtn").click(function() {
+        var gameNames = $("#gamesTable tbody tr td:nth-child(2)").map(function() { return $(this).text(); }).get();
+        if (gameNames.length === 0) {
+          alert("Please get common owned games first.");
+          return;
+        }
+        var gamesString = "";
+        for (var i = 0; i < gameNames.length; i++) {
+          gamesString += gameNames[i] + '\n';
+        }
+        var fileBlob = new Blob([gamesString], { type: 'text/plain' });
+        var url = URL.createObjectURL(fileBlob);
+        var link = document.createElement('a');
+        link.download = 'common_games.txt';
+        link.href = url;
+        link.click();
+        });
+      $("#testBtn").click(function() {
+        window.location.href = "/test2";
+      });
+      });
+    </script>
+</body>
+</html>
