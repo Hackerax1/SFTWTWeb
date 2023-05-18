@@ -5,13 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/css/styles.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body
+        {
+            background-color: #171a21;
+            color: #c7d5e0;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
+        <hr>
         <h1 class="text-center mb-4">Steam Game Finder</h1>
         <form>
             <div class="form-group">
@@ -83,11 +92,11 @@
                             var avatarId = friend['steamID'];
                             var avatarVanityUrl = friend['vanityurl'];
                             var avatar =
-                                "<div class='container border border-dark' id='" + userNum + "'><div class='row'><div class='col-2'><img src='" +
+                                "<div class='container border border-dark rounded bg-info' id='" + userNum + "'><div class='row'><div class='col-2'><img src='" +
                                 avatarUrl + "' class='img-fluid padding-1' alt='" +
                                 avatarName +
                                 "'></div><div class='col'><p class='text-center'>" +
-                                    avatarName + "</p><input type='checkbox' id='" + avatarId + "' name='chk'/></div></div></div>";
+                                    avatarName + "</p><input type='checkbox' class='float-right' id='" + avatarId + "' name='chk'/></div></div></div>";
                             if (count === 0) {
                                 $("#column1").append(avatar);
                                 count++;

@@ -52,7 +52,7 @@ body {
     font-weight: 400;
     line-height: 1.5;
     color: #212529;
-    background-color: #fff;
+    background-color: #171a21;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent
 }
@@ -631,7 +631,9 @@ progress {
     color: #6c757d
 }
 
-.container,
+.container{
+    color: #66c0f4
+}
 .container-fluid,
 .container-lg,
 .container-md,

@@ -1,6 +1,6 @@
 /* Set the background color of the page */
 body {
-    background-color: #f8f9fa;
+    background-color: #171a21;
   }
   
   /* Set the text color of the page */
@@ -12,13 +12,14 @@ body {
   h5,
   h6,
   p {
-    color: #343a40;
+    color: #c7d5e0;
   }
   
   /* Add margin to the top and bottom of the main container */
   .container {
     margin-top: 50px;
     margin-bottom: 50px;
+    color: #66c0f4;
   }
   
   /* Add padding to the input fields */
