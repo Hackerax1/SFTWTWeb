@@ -2,4 +2,4 @@
 .vscode
 /views/containertest.ejs
 /views/avatartest.js
-views\containertest.ejs
+\views\containertest.ejs
