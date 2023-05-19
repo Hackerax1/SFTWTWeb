@@ -1,2 +1,4 @@
 .env
 .vscode
+/views/container.js
+/views/avatartest.js
