@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/css/styles.css">
+    <!-- <link rel="stylesheet" href="/public/css/styles.css"> -->
     <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -77,9 +77,6 @@
                 var data = {
                     vanityUrl: vanityUrl
                 };
-                //add user Steam ID to steamIds array
-                // steamIds.push(vanityUrl);
-                // console.log(steamIds);
                 $.post("/getFriends", data, function (response) {
                     // console.log(response)
                     // $("#friendsList").empty();
@@ -101,12 +98,11 @@
                             var avatarName = friend['personaname'];
                             var avatarId = friend['steamID'];
                             var avatarVanityUrl = friend['vanityurl'];
-                            var avatar = "<div class='container border border-dark rounded bg-info my-container' id='" + 
-                                    userNum + "'><div class='row'><div class='col-4 d-flex align-items-center'><img src='" + 
-                                    avatarUrl + "' class='img-fluid' alt='" +
-                                    avatarName + "'></div><div class='col-4 text-center align-items-center'><p class='text-center'>" + 
-                                    avatarName + "</p></div><div class='col-4 d-flex align-items-center justify-content-end'><div class='form-check checkbox-lg'><input type='checkbox' class='form-check-input align-items-right' id='" + 
-                                    avatarId + "' name='chk'/></div></div></div></div>";
+                            var avatar = "<div class='container border border-dark rounded bg-info p-3' id='" + 
+                                    userNum +"'><div class='row align-items-center'><div class='col-3 ml-2'><img src='" + 
+                                    avatarUrl +"' class='img-fluid' alt='" +
+                                    avatarName + "'></div><div class='col-5 text-center'><p class='text-nowrap'>"+avatarName+"</p></div><div class='col-3'><div class='form-check checkbox-lg mb-5 ml-5'><input type='checkbox' class='form-check-input' id='" + 
+                                    avatarId + "' name='chk' /></div></div></div></div>";
                             if (count === 0) {
                                 $("#column1").append(avatar);
                                 count++;
@@ -149,9 +145,6 @@
                 $("#mainContainer").empty();
                 $("#mainContainer").append("<h2 class='text-center mb-4'>Common Games</h2>");
                 $("#mainContainer").append("<table class='table table-striped' id='gamesTable'><thead><tr><th scope='col'>#</th><th scope='col'>Game</th></tr></thead><tbody></tbody></table>");
-                // $("#btnContainer").empty();
-                // $("#btnContainer").append("<button type='button' class='btn btn-secondary' id='randomGameBtn'>Pick a Random Game</button>");
-                // $("#btnContainer").append("<button type='button' class='btn btn-success' id='saveGamesBtn'>Save Common Games to File</button>");
                 $.post("/getGames", data, function(response) {
                 $("#gamesTable tbody").empty();
                 games = response
