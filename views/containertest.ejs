@@ -20,6 +20,9 @@
             scale: 1.4;
             margin-right: 0.7rem;
         }
+        .my-container {
+            height: 65px; /* Adjust the height value as desired */   
+        }
     </style>
 </head>
 
@@ -71,7 +74,21 @@
                           </div>
                         </div>
                     </div>
-                      
+                    <div class='container border border-dark rounded bg-info my-container' id='" + userNum + "'>
+                        <div class='row'>
+                            <div class='col-4 d-flex align-items-center'>
+                                <img src='https://avatars.akamai.steamstatic.com/a3a8d33a7075110366c954d621cde95158289cfb.jpg' class='img-fluid' alt='" + avatarName + "'>
+                            </div>
+                            <div class='col-4 text-center align-items-center'>
+                                <p class='text-center'>" + avatarName + "</p>
+                            </div>
+                            <div class='col-4 d-flex align-items-center justify-content-end'>
+                                <div class='form-check checkbox-lg'>
+                                    <input type='checkbox' class='form-check-input align-items-right' id='" + avatarId + "' name='chk'/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class='container border border-dark rounded bg-info' id='userNum'>
                         <div class='row'>
                             <div class='col-2'><img src='https://avatars.akamai.steamstatic.com/a3a8d33a7075110366c954d621cde95158289cfb.jpg' class='img-fluid padding-1' alt='avatarName +'></div>

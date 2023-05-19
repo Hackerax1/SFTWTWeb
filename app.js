@@ -4,7 +4,7 @@ const axios = require('axios');
 const path = require('path');
 const ejs = require('ejs');
 const app = express();
-
+const favicon = require('serve-favicon');
 require('dotenv').config()
 
 // Set EJS as the templating engine
@@ -13,6 +13,9 @@ app.set('view engine', 'ejs');
 // Use the body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+//use the favicon middleware
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '/public')));
@@ -48,8 +51,6 @@ app.post('/getFriends', async (req, res) => {
         return response.data.response.players[0];
       })
     );
-
-
 
     //trim friendsInfo to only include personaname, steamid, and avatar
     const friendsInfoTrimmed = friendsInfo.map((friend) => {
