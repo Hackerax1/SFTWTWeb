@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'SFTWT'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_251E74B3C39C47C8BED95E85B92FA52C }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B94F51A9C7A541BBA4E4255BB767260B }}
           package: .
