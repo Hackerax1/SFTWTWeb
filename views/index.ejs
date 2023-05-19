@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="/public/css/styles.css"> -->
     <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -33,11 +32,17 @@
         <hr>
         <h1 class="text-center mb-4">Steam Game Finder</h1>
         <form>
-            <div class="form-group">
+            <div class="form-group" id="keyGroup">
+                <label for="apiKey">Enter Your SteamWebAPI Key</label>
+                <textarea class="form-control" id="apiKey" rows="1"></textarea>
+            </div>
+            <div class="form-group" id="vanityGroup">
                 <label for="vanityUrl">Enter Your Vanity Url</label>
                 <textarea class="form-control" id="vanityUrl" rows="1"></textarea>
             </div>
         <div class="container" id="btnContainer">
+            <button type="button" class="btn btn-info" id="getKeyBtn">Get SteamWebAPI Key</button>
+            <!-- <button type="button" class="btn btn-info" id="submitKeyBtn">Submit API Key</button>     -->
             <button type="button" class="btn btn-primary" id="getFriendsBtn">Get Steam Friends List</button>
             <button type="button" class="btn btn-primary" id="submitFriendsBtn">Submit Friends</button>
             <button type='button' class='btn btn-secondary' id='randomGameBtn'>Pick a Random Game</button>
@@ -59,27 +64,32 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(document).ready(function () {
-            //hide all buttons except getFriendsBtn
+            //hide all buttons except getKeyBtn and submitKeyBtn
             $("#submitFriendsBtn").hide();
             $("#randomGameBtn").hide();
             $("#saveGamesBtn").hide();
             var steamIds = [];
+            var apiKey = "";
+            $("#getKeyBtn").click(function () {
+                window.open("https://steamcommunity.com/dev/apikey", "_blank");
+            });
             $("#getFriendsBtn").click(function () {
                 //unhide submitFriendsBtn
                 $("#submitFriendsBtn").show();
-                //hide getFriendsBtn
+                //hide getFriendsBtn and getKeyBtn
+                $("#getKeyBtn").hide();
                 $("#getFriendsBtn").hide();
                 var vanityUrl = $("#vanityUrl").val();
+                var apiKey = $("#apiKey").val();
                 if (vanityUrl.length === 0) {
                     alert("Please enter a Vanity URL.");
                     return;
                 }
                 var data = {
-                    vanityUrl: vanityUrl
+                    vanityUrl: vanityUrl,
+                    apiKey: apiKey
                 };
                 $.post("/getFriends", data, function (response) {
-                    // console.log(response)
-                    // $("#friendsList").empty();
                     $("column1").empty();
                     $("column2").empty();
                     $("column3").empty();
@@ -119,7 +129,6 @@
                                 //automatically check that checkbox
                                 $("#" + avatarId).prop("checked", true);
                             }
-                            console.log("Index:" + index + " FriendsLength:" + friends.length + " UserNum:" + userNum);
                         });
                     }
                 });
@@ -130,7 +139,7 @@
                 $("#saveGamesBtn").show();
                 //hide submitFriendsBtn
                 $("#submitFriendsBtn").hide();
-                
+                var apiKey = $("#apiKey").val();
                 $("input:checkbox[name=chk]:checked").each(function () {
                     steamIds.push($(this).attr("id"));
                 });
@@ -139,16 +148,15 @@
                     return;
                 }
                 var data = {
-                    steamIds: steamIds
+                    steamIds: steamIds,
+                    apiKey: apiKey
                 };
-                console.log(data);
                 $("#mainContainer").empty();
                 $("#mainContainer").append("<h2 class='text-center mb-4'>Common Games</h2>");
                 $("#mainContainer").append("<table class='table table-striped' id='gamesTable'><thead><tr><th scope='col'>#</th><th scope='col'>Game</th></tr></thead><tbody></tbody></table>");
                 $.post("/getGames", data, function(response) {
                 $("#gamesTable tbody").empty();
                 games = response
-                console.log(response)
                 if (games.length === 0) {
                     $("#gamesTable tbody").append("<tr><td colspan='2' class='text-center'>No common games found.</td></tr>");
                 } else {
@@ -159,11 +167,8 @@
                 }
                 });
             });
-            $("#gamesBtn").click(function () {
-                window.location.href = "/games";
             });
             $("#randomGameBtn").click(function () {
-                console.log("random game button clicked");
                 var gameNames = $("#gamesTable tbody tr td:nth-child(2)").map(function () {
                     return $(this).text();
                 }).get();
@@ -176,7 +181,6 @@
                 alert("Random Game: " + randomGame);
             });
             $("#saveGamesBtn").click(function () {
-                console.log("saveGamesBtn clicked");
                 var gameNames = $("#gamesTable tbody tr td:nth-child(2)").map(function () {
                     return $(this).text();
                 }).get();
@@ -201,7 +205,6 @@
                 //reload page
                 location.reload();
             });
-        });
     </script>
 </body>
 </html>

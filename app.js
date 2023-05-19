@@ -25,29 +25,27 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+//
 app.post('/getFriends', async (req, res) => {
   try {
     const { vanityUrl } = req.body;
+    const { apiKey } = req.body;
     const steamID = await axios.get(
-      `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=${vanityUrl}`
+      `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${apiKey}&vanityurl=${vanityUrl}`
+      
     );
-
-    // console.log(steamID);
     const friends = await axios.get(
-      `https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamID.data.response.steamid}&relationship=friend`
+      `https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${apiKey}&steamid=${steamID.data.response.steamid}&relationship=friend`
     );
-    //console.log(friends);
     const friendsList = friends.data.friendslist.friends;
     //add user's steamid to friendsList
     friendsList.push({ steamid: steamID.data.response.steamid });
-    // console.log(friendsList + "friendsList");
     const friendsIds = friendsList.map((friend) => friend.steamid);
     const friendsInfo = await Promise.all(
       friendsIds.map(async (friend) => {
         const response = await axios.get(
-          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${process.env.STEAM_API_KEY}&steamids=${friend}`
+          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${apiKey}&steamids=${friend}`
         );
-        // console.log(response.data.response.players[0]);
         return response.data.response.players[0];
       })
     );
@@ -63,7 +61,6 @@ app.post('/getFriends', async (req, res) => {
         vanityUrl: vanityUrl,
       };
     });
-    console.log(friendsInfoTrimmed)
     res.json(friendsInfoTrimmed);
   } catch (error) {
     console.error(error);
@@ -76,7 +73,6 @@ app.post('/getFriends', async (req, res) => {
 app.post('/submitFriends', async (req, res) => {
   try {
     const { friends } = req.body;
-    console.log(friends);
     res.render('games', {friends: friends});
   } catch (error) {
     console.error(error);
@@ -87,15 +83,13 @@ app.post('/submitFriends', async (req, res) => {
 // Define the route to handle form submissions
 app.post('/getGames', async (req, res) => {
   try {
+    const { apiKey } = req.body;
     const { steamIds } = req.body;
-    console.log(steamIds);
-
     // Get the owned games for each Steam ID
     const ownedGames = await Promise.all(
       steamIds.map(async (steamId) => {
-        console.log(steamId);
         const response = await axios.get(
-          `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=1`
+          `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${apiKey}&steamid=${steamId}&format=json&include_appinfo=1`
         );
         return response.data.response.games;
       })
