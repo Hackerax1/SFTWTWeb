@@ -85,7 +85,7 @@ app.post('/getGames', async (req, res) => {
     const ownedGames = await Promise.all(
       steamIds.map(async (steamId) => {
         const response = await axios.get(
-          `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=1`
+          `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${process.env.STEAM_API_KEY}&steamid=${steamId}&format=json&include_appinfo=1&include_played_free_games=true`
         );
         return response.data.response.games;
       })

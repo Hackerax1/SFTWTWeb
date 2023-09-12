@@ -129,6 +129,8 @@
                 
                 $("input:checkbox[name=chk]:checked").each(function () {
                     steamIds.push($(this).attr("id"));
+                    //add name to list
+                    //$("#friendsList").append("<li>" + $(this).parent().parent().parent().parent().find("p").text() + "</li>");
                 });
                 if (steamIds.length === 0) {
                     alert("Please select at least one friend.");
@@ -137,6 +139,7 @@
                 var data = {
                     steamIds: steamIds
                 };
+                
                 $("#mainContainer").empty();
                 $("#mainContainer").append("<h2 class='text-center mb-4'>Common Games</h2>");
                 $("#mainContainer").append("<table class='table table-striped' id='gamesTable'><thead><tr><th scope='col'>#</th><th scope='col'>Game</th></tr></thead><tbody></tbody></table>");
@@ -183,8 +186,10 @@
                 var fileBlob = new Blob([gamesString], {
                     type: 'text/plain'
                 });
+                //var fileName = $("#friendsList").val().split("\n").filter(Boolean).join('_');
                 var url = URL.createObjectURL(fileBlob);
                 var link = document.createElement('a');
+                //link.download = filename + '.txt';
                 link.download = 'common_games.txt';
                 link.href = url;
                 link.click();
