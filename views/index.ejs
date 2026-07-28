@@ -24,6 +24,34 @@
             height: 65px; /* Adjust the height value as desired */
             
         }
+        #randomPickerContainer {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            border: 1px solid #66c0f4;
+            border-radius: 8px;
+            background: rgba(102, 192, 244, 0.1);
+            text-align: center;
+        }
+        #randomSpinner {
+            width: 3rem;
+            height: 3rem;
+            border-width: .32em;
+        }
+        #rollingGameName {
+            margin-top: 12px;
+            min-height: 24px;
+            color: #66c0f4;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        #randomResult {
+            display: none;
+            margin-top: 12px;
+            font-size: 1.1rem;
+            color: #a4d007;
+            font-weight: 700;
+        }
     </style>
 </head>
 
@@ -47,6 +75,13 @@
         <hr>
         <div class="container" id="mainContainer">
         <h2 class="text-center mb-4">Steam Friends List</h2>
+            <div id="randomPickerContainer">
+                <div class="spinner-border text-info" role="status" id="randomSpinner">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div id="rollingGameName"></div>
+                <div id="randomResult"></div>
+            </div>
             <div class="row">
                 <div class="col-md-4" id="column1"></div>
                 <div class="col-md-4" id="column2"></div>
@@ -164,9 +199,42 @@
                     alert("Please get common owned games first.");
                     return;
                 }
-                var randomIndex = Math.floor(Math.random() * gameNames.length);
-                var randomGame = gameNames[randomIndex];
-                alert("Random Game: " + randomGame);
+
+                $("#randomGameBtn").prop("disabled", true).text("Picking...");
+                $("#randomPickerContainer").show();
+                $("#randomResult").hide().text("");
+                $("#randomSpinner").show();
+
+                var steps = 22;
+                var currentStep = 0;
+                var startDelayMs = 65;
+                var endDelayMs = 300;
+
+                function runRouletteStep() {
+                    var progress = currentStep / (steps - 1);
+                    var easing = progress * progress;
+                    var delayMs = Math.round(startDelayMs + ((endDelayMs - startDelayMs) * easing));
+
+                    var rollingIndex = Math.floor(Math.random() * gameNames.length);
+                    var rollingName = gameNames[rollingIndex];
+                    $("#rollingGameName").text(rollingName);
+
+                    if (currentStep >= steps - 1) {
+                        var randomIndex = Math.floor(Math.random() * gameNames.length);
+                        var randomGame = gameNames[randomIndex];
+
+                        $("#randomSpinner").hide();
+                        $("#rollingGameName").text(randomGame);
+                        $("#randomResult").text("Random Game: " + randomGame).show();
+                        $("#randomGameBtn").prop("disabled", false).text("Pick a Random Game");
+                        return;
+                    }
+
+                    currentStep++;
+                    setTimeout(runRouletteStep, delayMs);
+                }
+
+                runRouletteStep();
             });
             $("#saveGamesBtn").click(function () {
                 var gameNames = $("#gamesTable tbody tr td:nth-child(2)").map(function () {
